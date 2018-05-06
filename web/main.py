@@ -127,7 +127,6 @@ def response_message():
 def response(user_msg):
     intend = adapterIntend.get_intend(user_msg)
     print("intend : ", intend)
-    # return intend
     if session['bot_state'] == 1:
         if intend == 1 :
             data = adapterGreeting.make_response(user_msg)
