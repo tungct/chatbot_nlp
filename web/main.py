@@ -25,6 +25,7 @@ def index():
     return render_template('index.html')
 @app.route('/m', methods=['POST'])
 def response_message():
+    print("state: " ,session['bot_state'])
     m = request.form['m']
     results = response(m)
     # if ner_crf_no_accent.check_accent(m) == True:
@@ -38,7 +39,7 @@ def response_message():
         })
     elif intend == 2 :
         msg = ""
-        pp.pprint(results)
+        # pp.pprint(results)
         if results['loc'] == None or len(results['loc']) == 0:
             return json.dumps({
             'message': results['msg']
@@ -67,7 +68,7 @@ def response_message():
 
     elif intend == 3:
         msg = ""
-        pp.pprint(results)
+        # pp.pprint(results)
         if results['loc'] == None or len(results['loc']) == 0:
             return json.dumps({
             'message': results['msg']
@@ -95,7 +96,7 @@ def response_message():
         })
     else :
         msg = ""
-        pp.pprint(results)
+        # pp.pprint(results)
         if   results['loc'] == None or len(results['loc']) == 0:
             return json.dumps({
             'message': results['msg']
@@ -125,6 +126,7 @@ def response_message():
 
 def response(user_msg):
     intend = adapterIntend.get_intend(user_msg)
+    print("intend : ", intend)
     # return intend
     if session['bot_state'] == 1:
         if intend == 1 :
@@ -147,9 +149,11 @@ def response(user_msg):
             data = adapterNer.detect_entity(user_msg)
         return make_msg(data,intend)
     elif session['bot_state'] == 3 :
+        data = adapterNer.detect_entity(user_msg)
         if adapterNer.detect_question_again(user_msg):
             data = adapterNer.detect_entity(user_msg)
-            print(data)
+            return make_msg(data,intend)
+        elif data['LOC'] != "" or data['TIME'] != "" or data['WEATHER'] != "":
             return make_msg(data,intend)
         else :
             session['bot_state'] = 1
@@ -165,9 +169,9 @@ def response(user_msg):
                 data = None
             return make_msg(data, intend)
 
-def response_no_accent(user_msg):
-    data = ner_crf_no_accent.ner_crf(user_msg)
-    return data
+# def response_no_accent(user_msg):
+#     data = ner_crf_no_accent.ner_crf(user_msg)
+#     return data
 
 
 

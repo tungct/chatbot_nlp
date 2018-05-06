@@ -1,5 +1,5 @@
 from nltk import classify
-from pyvi import ViTokenizer
+from pyvi.pyvi import ViTokenizer
 from sklearn.externals import joblib
 import setting
 import re
